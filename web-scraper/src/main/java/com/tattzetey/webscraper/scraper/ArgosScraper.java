@@ -65,8 +65,8 @@ public class ArgosScraper extends BaseScraper {
                 // Get the product details and
                 // save it to database
                 try {
-                    WebElement element = driver.findElement(By.cssSelector("main.pdp-main"));
-                    Map<String, String> productDetails = getProductDetails(driver, element);
+                    WebElement mainElement = driver.findElement(By.cssSelector("main.pdp-main"));
+                    Map<String, String> productDetails = getProductDetails(driver, mainElement);
                     saveProductDetails(productDetails);
                 } catch (Exception ex) {
                     System.out.println(ex);

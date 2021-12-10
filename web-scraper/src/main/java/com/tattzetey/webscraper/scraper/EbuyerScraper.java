@@ -57,15 +57,20 @@ public class EbuyerScraper extends BaseScraper {
                 // Scroll to the bottom to load every details
                 driverScroll(driver, 5, 500);
 
-                // Get all the product containers
-                List<WebElement> productElementList = driver.findElement(By.id("grid-view")).findElements(By.cssSelector(".grid-item"));
+                // Get all the product links
+                List<String> productElementList = Util.getElementsValueByAttr(driver.findElement(By.id("grid-view")).findElements(By.cssSelector(".grid-item__title a")), "href");
 
-                // Loop through all the product containers
-                // Then get the data from each product container
-                // Then save it to database
-                for (WebElement element : productElementList) {
+                // Loop through all the product links
+                for (String href : productElementList) {
+
+                    // Navigate to product details page
+                    driver.navigate().to(href);
+
+                    // Get the product details and
+                    // save it to database
                     try {
-                        Map<String, String> productDetails = getProductDetails(driver, element);
+                        WebElement mainElement = driver.findElement(By.id("main-content"));
+                        Map<String, String> productDetails = getProductDetails(driver, mainElement);
                         saveProductDetails(productDetails);
                     } catch(Exception ex) {
                         System.out.println(ex);
@@ -89,13 +94,13 @@ public class EbuyerScraper extends BaseScraper {
     private Map<String, String> getProductDetails(WebDriver driver, WebElement element) {
 
         Map<String, String> result = new HashMap<String, String>();
-        String title = element.findElement(By.cssSelector("a[data-event-label='Title']")).getAttribute("innerText");
+        String title = element.findElement(By.cssSelector("h1.product-hero__title")).getAttribute("innerText");
         String brand = title;
         String price = element.findElement(By.cssSelector("p.price")).getAttribute("innerText").split(" ")[1];
-        String imageUrl = driverWait(driver, Duration.ofSeconds(5)).until(d -> d.findElement(By.cssSelector("a[data-event-label='Image'] img"))).getAttribute("src");
-        String url = element.findElement(By.cssSelector("a[data-event-label='Title']")).getAttribute("href");
+        String imageUrl = driverWait(driver, Duration.ofSeconds(5)).until(d -> d.findElement(By.cssSelector("div.image-gallery__hero img"))).getAttribute("src");
+        String url = driver.getCurrentUrl();
 
-        List<String> specArr = Util.getElementsValueByAttr(element.findElements(By.cssSelector("ul.grid-item__ksp li")), "innerText");
+        List<String> specArr = Util.getElementsValueByAttr(element.findElements(By.cssSelector("ul.product-hero__key-selling-points li.product-hero__key-selling-point")), "innerText");
         String specString = specArr.toString();
 
         // Get product details by regex

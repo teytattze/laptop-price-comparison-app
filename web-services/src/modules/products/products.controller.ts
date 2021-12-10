@@ -4,9 +4,9 @@ import {
   findProduct,
   findProductsByBrand,
   findProductCount,
-  findAllProductsBrand,
+  findAllBrands,
   findProductCountByBrand,
-} from './products.dao';
+} from './products.model';
 import { paginationHelper } from '../../lib/pagination-helper';
 
 export const listProducts = async (
@@ -23,13 +23,13 @@ export const listProducts = async (
   }
 };
 
-export const listProductsBrand = async (
+export const listBrands = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   try {
-    const products = await findAllProductsBrand();
+    const products = await findAllBrands();
     res.status(200).json(products);
   } catch (e) {
     next(e);

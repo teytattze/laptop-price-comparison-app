@@ -18,7 +18,7 @@ export default function Products() {
   const perPage = Number(searchParams.get('perPage')) || 20;
 
   const { data: total } = useQuery(GET_PRODUCTS_COUNT_KEY, getProductsCount);
-  const { data, isLoading } = useQuery<IProduct[]>(
+  const { data, isLoading, isError } = useQuery<IProduct[]>(
     [LIST_PRODUCTS_KEY, page, perPage],
     () => listProducts({ page, perPage }),
     { enabled: Boolean(total) },
@@ -26,7 +26,7 @@ export default function Products() {
 
   return (
     <>
-      {!data && !isLoading ? (
+      {isError ? (
         <Alert
           message="Error"
           description="There is no data available currently..."

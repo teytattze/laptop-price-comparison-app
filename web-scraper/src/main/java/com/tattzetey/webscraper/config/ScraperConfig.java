@@ -18,7 +18,7 @@ public class ScraperConfig {
     ScraperConfig(ArgosScraper argosScraper, AoScraper aoScraper, BoxScraper boxScraper, CurrysScraper currysScraper, EbuyerScraper ebuyerScaper) {
         scrapersList.add(argosScraper);
         scrapersList.add(aoScraper);
-        scrapersList.add(boxScraper);
+        scrapersList.add(boxScraper); // This scraper get blocked often, change the user-agent to prevent block
         scrapersList.add(currysScraper);
         scrapersList.add(ebuyerScaper);
     }

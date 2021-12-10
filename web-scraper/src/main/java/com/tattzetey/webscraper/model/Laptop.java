@@ -27,7 +27,7 @@ public class Laptop {
     @Column(name = "screen_size")
     private String screenSize;
 
-    @ManyToOne(targetEntity = Brand.class, fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+    @ManyToOne(targetEntity = Brand.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "brand_id")
     private Brand brand;
 

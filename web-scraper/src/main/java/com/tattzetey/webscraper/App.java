@@ -24,5 +24,6 @@ public class App {
         if (scanner.hasNext()) {
             scraperConfig.stopAllScrapers();
         }
+
     }
 }

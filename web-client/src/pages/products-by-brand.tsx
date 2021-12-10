@@ -22,7 +22,7 @@ export default function ProductsByBrand() {
     [GET_PRODUCTS_BY_BRAND_COUNT_KEY, brand],
     () => getProductsBrandCount(brand as string),
   );
-  const { data, isLoading } = useQuery<IProduct[]>(
+  const { data, isLoading, isError } = useQuery<IProduct[]>(
     [LIST_PRODUCTS_KEY, page, perPage, brand],
     () => listProductsByBrand(brand as string, { page, perPage }),
     { enabled: Boolean(total) },
@@ -30,7 +30,7 @@ export default function ProductsByBrand() {
 
   return (
     <>
-      {!data && !isLoading ? (
+      {isError ? (
         <Alert
           message="Error"
           description="There is no data available currently..."

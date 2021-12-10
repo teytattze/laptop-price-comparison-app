@@ -25,7 +25,7 @@ public class Source {
     @Column()
     private double price;
 
-    @ManyToOne(targetEntity = LaptopSpecification.class, fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+    @ManyToOne(targetEntity = LaptopSpecification.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "laptop_specification_id")
     private LaptopSpecification laptopSpecification;
 

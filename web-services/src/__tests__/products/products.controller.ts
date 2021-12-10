@@ -6,6 +6,15 @@ import {
   MOCK_PRODUCTS_BRANDS,
   MOCK_PRODUCTS_WITH_SOURCES,
 } from '../../modules/products/__mocks__/products.mock';
+import * as productsDao from '../../modules/products/products.model';
+import {
+  findAllBrands,
+  findAllProducts,
+  findProduct,
+  findProductCount,
+  findProductCountByBrand,
+  findProductsByBrand,
+} from '../../modules/products/__mocks__/products.model';
 
 let server: any;
 let request: supertest.SuperAgentTest;
@@ -20,7 +29,21 @@ afterAll(async () => {
 });
 
 describe('ProductsController', () => {
-  jest.mock('../../modules/products/products.dao');
+  jest
+    .spyOn(productsDao, 'findAllProducts')
+    .mockImplementation(findAllProducts);
+  jest.spyOn(productsDao, 'findAllBrands').mockImplementation(findAllBrands);
+  jest.spyOn(productsDao, 'findProduct').mockImplementation(findProduct);
+  jest
+    .spyOn(productsDao, 'findProductCount')
+    .mockImplementation(findProductCount);
+  jest
+    .spyOn(productsDao, 'findProductsByBrand')
+    .mockImplementation(findProductsByBrand);
+  jest
+    .spyOn(productsDao, 'findProductCountByBrand')
+    .mockImplementation(findProductCountByBrand);
+
   const BASE_PATH = '/api/products';
 
   it('GET /', async () => {
@@ -63,12 +86,12 @@ describe('ProductsController', () => {
       });
   });
 
-  it('GET /brands/count?keywords=asus', async () => {
+  it('GET /search/count?keywords=asus', async () => {
     await request
-      .get(`${BASE_PATH}/brands/count?keywords=asus`)
+      .get(`${BASE_PATH}/search/count?keywords=asus`)
       .expect(200)
       .expect((res) => {
-        expect(res.body).toEqual(46);
+        expect(res.body).toEqual(76);
       });
   });
 

@@ -59,15 +59,20 @@ public class AoScraper extends BaseScraper {
                 // Scroll to the bottom to load every details
                 driverScroll(driver, 12, 350);
 
-                // Get all the product containers
-                List<WebElement> productElementList = driver.findElements(By.cssSelector("li[data-testid='product-card-list-view']"));
+                // Get all the product links
+                List<String> hrefList = Util.getElementsValueByAttr(driver.findElements(By.cssSelector("a[data-testid='product-card-link']")), "href");
 
-                // Loop through all the product containers
-                // Then get the data from each product container
-                // Then save it to database
-                for (WebElement element : productElementList) {
+                // Loop through all the product links
+                for (String href : hrefList) {
+
+                    // Navigate to product details page
+                    driver.navigate().to(href);
+
+                    // Get the product details and
+                    // save it to database
                     try {
-                        Map<String, String> productDetails = getProductDetails(driver, element);
+                        WebElement mainElement = driverWait(driver, Duration.ofSeconds(5)).until(d -> d.findElement(By.cssSelector("main[data-main-container]")));
+                        Map<String, String> productDetails = getProductDetails(driver, mainElement);
                         saveProductDetails(productDetails);
                     } catch (Exception ex) {
                         System.out.println(ex);
@@ -91,13 +96,13 @@ public class AoScraper extends BaseScraper {
     private Map<String, String> getProductDetails(WebDriver driver, WebElement element) {
 
         Map<String, String> result = new HashMap<String, String>();
-        String title = element.findElement(By.cssSelector("h2[itemprop='name']")).getAttribute("innerText");
+        String title = element.findElement(By.id("pageTitle")).getAttribute("innerText");
         String brand = title;
-        String price = element.findElement(By.cssSelector("div[data-testid='price-now']")).getAttribute("innerText");
-        String imageUrl = driverWait(driver, Duration.ofSeconds(5)).until(d -> d.findElement(By.cssSelector("img[itemprop='image'].product-card__primary-image.opacity-100"))).getAttribute("src");
-        String url = element.findElement(By.cssSelector("a[data-testid='product-card-link']")).getAttribute("href");
+        String price = element.findElement(By.cssSelector("span[itemprop='price']")).getAttribute("innerText");
+        String imageUrl = driverWait(driver, Duration.ofSeconds(5)).until(d -> d.findElement(By.cssSelector("img[data-testid='carousel-centre-image'].product-gallery-image"))).getAttribute("src");
+        String url = driver.getCurrentUrl();
 
-        List<WebElement> elementArr = element.findElements(By.cssSelector("li[data-tag-name='bullet-video-clicked'] span:nth-child(2)"));
+        List<WebElement> elementArr = element.findElements(By.cssSelector("div[data-tag-section='key features'] li"));
         List<String> specArr = new ArrayList<String>();
 
         for (int i = 0; i < elementArr.size(); i++) {
@@ -116,7 +121,7 @@ public class AoScraper extends BaseScraper {
         // Get product details by regex
         String processor = Util.getStringByRegex(specString, RegexConst.PROCESSOR_PATTERN);
         String graphicsCard = Util.getStringByRegex(specString, RegexConst.GRAPHICS_CARD_PATTERN);
-        String ram = Util.getStringByRegex(specString, RegexConst.RAM_PATTERN);
+        String ram = Util.getStringByRegex(element.findElement(By.cssSelector("span[data-tag-name='ram']")).getAttribute("innerText"), RegexConst.RAM_PATTERN);
         String ssd;
         String hdd;
         // Split hdd and ssd if the computer has two types of storage
@@ -130,6 +135,12 @@ public class AoScraper extends BaseScraper {
             hdd = "";
         }
         String screenSize = Util.getStringByRegex(title, RegexConst.SCREEN_SIZE);
+
+        System.out.println(processor);
+        System.out.println(graphicsCard);
+        System.out.println(ram);
+        System.out.println(ssd);
+        System.out.println(screenSize);
 
         // Save all the details into a map
         result.put(ScraperConst.BRAND, brand);

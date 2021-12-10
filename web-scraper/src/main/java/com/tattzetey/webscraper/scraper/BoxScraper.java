@@ -51,18 +51,29 @@ public class BoxScraper extends BaseScraper {
                 // Navigate page by page
                 driver.navigate().to(UrlConst.BOX_BASE_URL + "/gaming-laptops/page/" + page);
 
-                // Get all the product containers
-                List<WebElement> productElementList = driver.findElements(By.cssSelector(".product-list-item"));
+                // Get all the product links
+                List<String> hrefList = Util.getElementsValueByAttr(driver.findElements(By.cssSelector(".p-list table.p-list-image a")), "href");
 
-                // Loop through all the product containers
-                // Then get the data from each product container
-                // Then save it to database
-                for (WebElement element : productElementList) {
+                // Loop through all the product links
+                for (String href : hrefList) {
+
+                    // Navigate to product details page
+                    driver.navigate().to(href);
+
+                    // Get the product details and
+                    // save it to database
                     try {
-                        Map<String, String> productDetails = getProductDetails(driver, element);
+                        WebElement mainElement = driverWait(driver, Duration.ofSeconds(5)).until(d -> d.findElement(By.cssSelector("div.p-wrapper.form-wait")));
+                        Map<String, String> productDetails = getProductDetails(driver, mainElement);
                         saveProductDetails(productDetails);
                     } catch(Exception ex) {
                         System.out.println(ex);
+                    }
+
+                    try {
+                        sleep(2000);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
                 }
 
@@ -89,13 +100,13 @@ public class BoxScraper extends BaseScraper {
     private Map<String, String> getProductDetails(WebDriver driver, WebElement element) {
 
         Map<String, String> result = new HashMap<String, String>();
-        String title = element.findElement(By.cssSelector("h3>a")).getAttribute("innerText");
+        String title = element.findElement(By.cssSelector("span.p-title-desc")).getAttribute("innerText");
         String brand = title;
         String price = element.findElement(By.cssSelector("span.pq-price")).getAttribute("innerText");
-        String imageUrl = driverWait(driver, Duration.ofSeconds(5)).until(d -> d.findElement(By.cssSelector("table.p-list-image img.lazyimage"))).getAttribute("src");
-        String url = element.findElement(By.cssSelector(".p-list-image a")).getAttribute("href");
+        String imageUrl = driverWait(driver, Duration.ofSeconds(5)).until(d -> d.findElement(By.cssSelector("table.p-image.pq-image img"))).getAttribute("src");
+        String url = driver.getCurrentUrl();
 
-        List<String> specArr = Util.getElementsValueByAttr(element.findElements(By.cssSelector(".p-list-points li")), "innerText");
+        List<String> specArr = Util.getElementsValueByAttr(element.findElements(By.cssSelector("div#Specifications tr td:nth-child(2)")), "innerText");
         String specString = specArr.toString();
 
         // Get product details by regex

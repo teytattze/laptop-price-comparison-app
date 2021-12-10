@@ -3,9 +3,9 @@ import {
   getProduct,
   getProductCount,
   getProductCountByBrand,
+  listBrands,
   listProductByBrand,
   listProducts,
-  listProductsBrand,
 } from './products.controller';
 
 const productsRouter = express.Router();
@@ -16,7 +16,7 @@ productsRouter.get('/search', listProductByBrand);
 
 productsRouter.get('/search/count', getProductCountByBrand);
 
-productsRouter.get('/brands', listProductsBrand);
+productsRouter.get('/brands', listBrands);
 
 productsRouter.get('/count', getProductCount);
 

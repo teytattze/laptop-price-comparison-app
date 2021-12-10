@@ -17,11 +17,11 @@ public class LaptopSpecification {
     @Column()
     private String id;
 
-    @ManyToOne(targetEntity = Laptop.class, fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+    @ManyToOne(targetEntity = Laptop.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "laptop_id")
     private Laptop laptop;
 
-    @ManyToOne(targetEntity = Specification.class, fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+    @ManyToOne(targetEntity = Specification.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "specification_id")
     private Specification specification;
 

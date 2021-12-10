@@ -33,7 +33,6 @@ public class SourceDAO extends BaseDAO {
             createSource(source);
             return source;
         }
-        currSource.setPrice(source.getPrice());
         updateSource(currSource);
         return currSource;
     }

@@ -21,7 +21,7 @@ export const findAllProducts = async (
   return result as IProduct[];
 };
 
-export const findAllProductsBrand = async () => {
+export const findAllBrands = async () => {
   const sqlQuery = 'SELECT * FROM `brands`';
   const [result] = await db.execute(sqlQuery);
   return result as IBrand[];

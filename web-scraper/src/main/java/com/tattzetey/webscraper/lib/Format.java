@@ -74,6 +74,11 @@ public class Format {
         if (brand.contains("Intel")) {
             model = model.replace(" ", "-");
         }
+
+        if (model.substring(model.length() - 1).equals("-")) {
+            return "";
+        }
+
         return brand.concat(" ").concat(model).trim();
     }
 
